@@ -1,8 +1,11 @@
 import os
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
+
 import pytest
 from dotenv import load_dotenv
 from yarl import URL
+
 from giclient.client import AsyncClientAPI
 
 load_dotenv()

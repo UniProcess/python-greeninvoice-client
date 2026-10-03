@@ -1,6 +1,7 @@
-import pytest
-import httpx
 import uuid
+
+import httpx
+import pytest
 
 from giclient.client import AsyncClientAPI
 
@@ -34,7 +35,7 @@ async def test_live_sandbox_create_item(sandbox_client: AsyncClientAPI) -> None:
         try:
             error_details = e.response.json()
             pytest.fail(f"Morning API rejected the item payload! Error Details: {error_details}")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(f"Morning API rejected the item payload! Raw response: {e.response.text}")
 
 
@@ -89,5 +90,5 @@ async def test_live_sandbox_create_document(sandbox_client: AsyncClientAPI) -> N
         try:
             error_details = e.response.json()
             pytest.fail(f"Morning API rejected the document payload! Error Details: {error_details}")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(f"Morning API rejected the document payload! Raw response: {e.response.text}")

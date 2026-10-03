@@ -1,6 +1,7 @@
-import pytest
-import httpx
 import uuid
+
+import httpx
+import pytest
 
 from giclient.client import AsyncClientAPI
 
@@ -43,6 +44,6 @@ async def test_live_sandbox_create_client(sandbox_client: AsyncClientAPI) -> Non
         try:
             error_details = e.response.json()
             pytest.fail(f"Morning API rejected the payload! Morning's Error Details: {error_details}")
-        except Exception:
+        except Exception:  # noqa: BLE001
             # Fallback if the response isn't JSON
             pytest.fail(f"Morning API rejected the payload! Raw response: {e.response.text}")
