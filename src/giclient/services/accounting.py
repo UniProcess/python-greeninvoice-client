@@ -1,6 +1,4 @@
 import logging
-import asyncio
-import httpx
 from typing import Any
 
 from giclient.manager import AsyncClientManager

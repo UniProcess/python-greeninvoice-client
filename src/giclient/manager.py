@@ -1,12 +1,12 @@
 import logging
-import httpx
-from yarl import URL
 from functools import partial
 
-from giclient.event_hooks import *
-from giclient.authentication import JWTAuthentication
-from giclient.transport import RateLimitedAsyncTransport
+import httpx
+from yarl import URL
 
+from giclient.authentication import JWTAuthentication
+from giclient.event_hooks import *
+from giclient.transport import RateLimitedAsyncTransport
 
 type _AsyncClientManager = AsyncClientManager
 
@@ -25,10 +25,10 @@ class AsyncClientManager:
 
     _logger_name: str = "greeninvoice.async_client_manager"
     _logger = logging.getLogger(name=_logger_name)
-    _request_hooks: list[partial] = [
+    _request_hooks: list[partial] = [  # noqa: RUF012
         partial(log_request, logger_name=_logger_name)
     ]
-    _response_hooks: list[partial] = [
+    _response_hooks: list[partial] = [  # noqa: RUF012
         # partial(log_response, logger_name=_logger_name),
         partial(response_raise_for_status, logger_name=_logger_name)
     ]
@@ -38,6 +38,7 @@ class AsyncClientManager:
         api_key: str,
         api_secret: str,
         base_url: URL,
+        auth_base_url: URL,
         max_rate: int=3,
         time_period: int=1,
         retries: int=0) -> None:
@@ -45,6 +46,7 @@ class AsyncClientManager:
         self.api_key = api_key
         self.api_secret = api_secret
         self.base_url = base_url
+        self.auth_base_url = auth_base_url
         self.max_rate = max_rate
         self.time_period = time_period
         self.retries = retries
@@ -80,8 +82,8 @@ class AsyncClientManager:
         self.auth = JWTAuthentication(
             api_key=self.api_key,
             api_secret=self.api_secret,
-            base_url=str(self.base_url),
-            token_endpoint="/account/token"
+            base_url=str(self.auth_base_url),
+            token_endpoint="/idp/v1/oauth/token"
         )
         self.client_timeout = httpx.Timeout(
             timeout=None

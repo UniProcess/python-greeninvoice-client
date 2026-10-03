@@ -1,10 +1,9 @@
-import logging
-import asyncio
-import httpx
 import base64
+import logging
 from typing import Any, Literal
 
 from giclient.manager import AsyncClientManager
+
 
 class AsyncBusinessesClient:
     """
@@ -146,7 +145,7 @@ class AsyncBusinessesClient:
         - The current allowed file types are: GIF, PNG, JPG, SVG, PDF.
         """
         # Open the file in binary mode:
-        with open(file_path, "rb") as file:
+        with open(file_path, "rb") as file:  # noqa: ASYNC230
             # Encode the file in base64:
             base64_file = base64.b64encode(file.read())
             # Send the file to the API:

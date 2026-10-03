@@ -1,9 +1,11 @@
-import time
 import logging
+import time
+from collections.abc import Callable, Coroutine
+from functools import partial
+from typing import Any
+
 import httpx
 
-from typing import Any, Coroutine, Callable
-from functools import partial
 from giclient.event_hooks import *
 
 
@@ -13,10 +15,10 @@ class JWTAuthentication(httpx.Auth):
 
     _logger_name: str = "greeninvoice.async_greeninvoice_api_authenticator"
     _logger = logging.getLogger(name=_logger_name)
-    _request_hooks: list[Callable[[httpx.Request], Any]] = [
+    _request_hooks: list[Callable[[httpx.Request], Any]] = [  # noqa: RUF012
         # partial(log_request, logger_name=_logger_name)
     ]
-    _response_hooks: list[Callable[[httpx.Response], Any]] = [
+    _response_hooks: list[Callable[[httpx.Response], Any]] = [  # noqa: RUF012
         # partial(log_response, logger_name=_logger_name),
         partial(response_raise_for_status, logger_name=_logger_name)
     ]
@@ -93,14 +95,14 @@ class JWTAuthentication(httpx.Auth):
             method="POST",
             url=self.token_endpoint,
             json={
-                'id': self.api_key,
-                'secret': self.api_secret,
+                'client_id': self.api_key,
+                'client_secret': self.api_secret,
                 'grant_type': 'client_credentials'
             })
         try:
             token_data = response.json()
-            self._token = token_data['token']
-            self._token_expiration = token_data['expires']
+            self._token = token_data['accessToken']
+            self._token_expiration = token_data['expiresAt']
         except httpx.HTTPStatusError as e:
             raise httpx.HTTPStatusError(
                 message="Failed to get JWT token.",
@@ -125,8 +127,8 @@ class JWTAuthentication(httpx.Auth):
             method="POST",
             url=self.token_endpoint,
             json={
-                'id': self.api_key,
-                'secret': self.api_secret,
+                'client_id': self.api_key,
+                'client_secret': self.api_secret,
                 'grant_type': 'client_credentials'
             }
         )
@@ -134,8 +136,8 @@ class JWTAuthentication(httpx.Auth):
             response = await response
         try:
             token_data = response.json()
-            self._token = token_data['token']
-            self._token_expiration = token_data['expires']
+            self._token = token_data['accessToken']
+            self._token_expiration = token_data['expiresAt']
         except httpx.HTTPStatusError as e:
             raise httpx.HTTPStatusError(
                 message="Failed to get JWT token.",

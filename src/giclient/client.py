@@ -1,22 +1,23 @@
 import logging
-from yarl import URL
-
-from typing import Literal, TypeVar
 from types import TracebackType
+from typing import Literal, Self, TypeVar
+
+from yarl import URL
 
 from giclient.manager import AsyncClientManager
 from giclient.services.account import AsyncAccountClient
+from giclient.services.accounting import AsyncAccountingClient
 from giclient.services.businesses import AsyncBusinessesClient
 from giclient.services.clients import AsyncClientsClient
-from giclient.services.suppliers import AsyncSuppliersClient
-from giclient.services.items import AsyncItemsClient
 from giclient.services.documents import AsyncDocumentsClient
 from giclient.services.expenses import AsyncExpensesClient
-from giclient.services.accounting import AsyncAccountingClient
+from giclient.services.items import AsyncItemsClient
 from giclient.services.payments import AsyncPaymentsClient
-
+from giclient.services.suppliers import AsyncSuppliersClient
 
 API_BASE_URL = "https://api.greeninvoice.co.il/api/v1"
+
+AUTH_BASE_URL = "https://api.morning.co"
 
 TOOLS_BASE_URL = "https://cache.greeninvoice.co.il"
 
@@ -75,6 +76,7 @@ class AsyncClientAPI:
             api_key=str(api_key),
             api_secret=str(api_secret),
             base_url=resolved_base_url,
+            auth_base_url=URL(AUTH_BASE_URL),
             max_rate=max_rate,
             time_period=time_period,
             retries=retries)
@@ -93,7 +95,7 @@ class AsyncClientAPI:
     # ==========================================================================================
     #                                   Context Manager Methods
     # ==========================================================================================
-    async def __aenter__(self: T) -> T:
+    async def __aenter__(self) -> Self:
         self._logger.debug(msg="Entering the context manager.")
         await self.manager.client.__aenter__()
         return self
@@ -102,7 +104,7 @@ class AsyncClientAPI:
                 exc_type: type[BaseException] | None = None,
                 exc_value: BaseException | None = None,
                 traceback: TracebackType | None = None) -> None:
-        self._logger.debug(msg=f"Exiting the context manager. Exception: {str(exc_type)} - {str(exc_value)} - {str(traceback)}")
+        self._logger.debug(msg=f"Exiting the context manager. Exception: {exc_type!s} - {exc_value!s} - {traceback!s}")
         await self.manager.client.__aexit__(exc_type, exc_value, traceback)
 
     async def aclose(self) -> None:

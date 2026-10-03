@@ -2,8 +2,8 @@ import logging
 from typing import Any
 
 from giclient.manager import AsyncClientManager
-from giclient.services.shared.search import AsyncSearchMixin
 from giclient.services.shared.get_update_delete import AsyncGetUpdateDeleteMixin
+from giclient.services.shared.search import AsyncSearchMixin
 
 
 class AsyncItemsClient(AsyncSearchMixin, AsyncGetUpdateDeleteMixin):
@@ -15,7 +15,7 @@ class AsyncItemsClient(AsyncSearchMixin, AsyncGetUpdateDeleteMixin):
     def __init__(
         self,
         manager: AsyncClientManager) -> None:
-        super(AsyncItemsClient, self).__init__(manager=manager, endpoint="items")
+        super().__init__(manager=manager, endpoint="items")
         self.manager = manager
         self.url = self.manager.base_url.joinpath("items")
 

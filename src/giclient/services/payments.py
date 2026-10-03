@@ -1,7 +1,4 @@
-import logging
-import asyncio
-import httpx
-from yarl import URL
+
 from typing import Any
 
 from giclient.manager import AsyncClientManager
@@ -27,7 +24,7 @@ class AsyncPaymentsClient(AsyncSearchMixin):
     def __init__(
         self,
         manager: AsyncClientManager) -> None:
-        super(AsyncPaymentsClient, self).__init__(manager=manager, endpoint="payments")
+        super().__init__(manager=manager, endpoint="payments")
         self.manager = manager
         self.url = self.manager.base_url.joinpath("payments")
 

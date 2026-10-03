@@ -1,6 +1,7 @@
 import logging
-from yarl import URL
 from typing import Any
+
+from yarl import URL
 
 from giclient.event_hooks import *
 from giclient.manager import AsyncClientManager
@@ -21,7 +22,7 @@ class AsyncDocumentsClient(AsyncSearchMixin):
     def __init__(
         self,
         manager: AsyncClientManager) -> None:
-        super(AsyncDocumentsClient, self).__init__(manager=manager, endpoint="documents")
+        super().__init__(manager=manager, endpoint="documents")
         self.manager = manager
         self.url = self.manager.base_url.joinpath("documents")
         self._types_en = None
