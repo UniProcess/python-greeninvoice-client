@@ -264,7 +264,7 @@ class AsyncBusinessesClient:
             The business types, in the specified language. Each type includes the `id` (int) and the `name` (str).
         """
         response = await self.manager.client.get(
-            url=self.url.joinpath("types").update_query({"lang": lang}),
+            url=str(self.url.joinpath("types").update_query({"lang": lang})),
             auth=None)
         return response.json()
 
